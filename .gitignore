@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+Json_filtered 2
+Json_filtered.zip
+Json_filtered/
+duckdb_data.db
+target/
+src/test/resources/zip_Download/
