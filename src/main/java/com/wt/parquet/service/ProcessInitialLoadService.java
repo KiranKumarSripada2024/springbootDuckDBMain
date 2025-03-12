@@ -66,6 +66,33 @@ public class ProcessInitialLoadService {
         zipJsonFilteredDirectory();
     }
 
+    // In ProcessInitialLoadService.java
+    public void processCustomZip(String zipPath) throws Exception {
+        // Use the provided ZIP file path instead of downloading
+        File zipFile = new File(zipPath);
+        if (!zipFile.exists() || !zipFile.isFile()) {
+            throw new IOException("ZIP file not found at path: " + zipPath);
+        }
+
+        // Extract Parquet files into memory (byte arrays)
+        Map<String, List<byte[]>> parquetFiles = extractionService.extractParquetFromZip(zipFile);
+
+        // Filter data using DuckDB (writing directly to files)
+        Map<String, FilterResult> filteredResults = initialLoadService.filterParquetFiles(parquetFiles);
+
+        // Ensure Json_filtered directory exists
+        File jsonDir = new File(JSON_DIR);
+        if (!jsonDir.exists() && jsonDir.mkdirs()) {
+            logger.info("Json_InitialLoad directory created: {}", jsonDir.getAbsolutePath());
+        }
+
+        // Generate manifest.txt
+        generateManifest(filteredResults);
+
+        // Zip the Json_filtered directory
+        zipJsonFilteredDirectory();
+    }
+
     private void generateManifest(Map<String, FilterResult> filteredResults) {
         Optional<String> optionalEditedDate = filteredResults.values().stream()
                 .map(result -> result.editedDate)
