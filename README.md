@@ -5,8 +5,11 @@
 
 ## API CALLING
 
-### For Initial Load:-
+### For Initial Load(Automated):-
 http://localhost:8080/api/parquet/initialLoad
+
+### For Initial Load(Manual):-
+http://localhost:8080/api/parquet/initialLoad-manual?zipPath=Your zip-path here
 
 ### For Processing Delta Changes:-
 http://localhost:8080/api/parquet/process
